@@ -1,0 +1,3 @@
+[submodule "vendor/rest_gae"]
+	path = vendor/rest_gae
+	url = https://github.com/budowski/rest_gae

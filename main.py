@@ -14,8 +14,15 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 import webapp2
+import os
+import sys
 
-from models import Trip
+REST_GAE_PROJECT_DIR = os.path.join(os.path.dirname(__file__), 'vendor/rest_gae')
+sys.path.append(REST_GAE_PROJECT_DIR)
+
+from models import Trip, Waypoint
+from rest_gae import *
+from rest_gae.users import UserRESTHandler
 
 
 class MainHandler(webapp2.RequestHandler):
@@ -33,10 +40,27 @@ class MainHandler(webapp2.RequestHandler):
         trip_key = trip.put()
         trip_url = '/trip/' + trip_key.urlsafe()
         print trip_url
+        self.redirect(trip_url)
         self.response.out.write("Trip:" + trip + "; trip_key = " + trip_key + "; trip_url = " + trip_url)
         # Redirect to trip?
 
+config = {
+    'webapp2_extras.sessions': {
+        'secret_key': 'my-super-secret-key',
+    }
+}
 
 app = webapp2.WSGIApplication([
-    (r'/trip/(.*)/?', MainHandler)
-], debug=True)
+    RESTHandler(
+        '/api/v1/trip',
+        Trip,
+        permissions={
+            'GET': PERMISSION_ANYONE,
+            'POST': PERMISSION_LOGGED_IN_USER,
+            'PUT': PERMISSION_OWNER_USER,
+            'DELETE': PERMISSION_OWNER_USER
+        },
+
+    ),
+    # (r'/(.*)?', MainHandler),
+], config=config, debug=True)
