@@ -15,29 +15,28 @@
 # limitations under the License.
 import webapp2
 
+from models import Trip
+
 
 class MainHandler(webapp2.RequestHandler):
-    def get(self, myobject_id):
-        myobject_collection = app.db.myobjects
-        myobject = myobject_collection.find_one({"_id": ObjectId(myobject_id)})
-
-        if myobject is None:
-            response = jsonify(data=[])
-            response.status_code = 404
-            return response
+    def get(self, trip_id):
+        trip = Trip.get_by_url(trip_id)
+        print trip
+        if trip is None:
+            self.error(404)
         else:
-            return myobject
-        print 'test'
+            self.response.out.write(trip)
 
     def post(self):
-        new_myobject = request.json
-        myobject_collection = app.db.myobjects
-        result = myobject_collection.insert_one(new_myobject)
+        name = self.request.get("name")
+        trip = Trip(name=name, waypoints=None)
+        trip_key = trip.put()
+        trip_url = '/trip/' + trip_key.urlsafe()
+        print trip_url
+        self.response.out.write("Trip:" + trip + "; trip_key = " + trip_key + "; trip_url = " + trip_url)
+        # Redirect to trip?
 
-        myobject = myobject_collection.find_one({"_id": ObjectId(result.inserted_id)})
-
-        return myobject
 
 app = webapp2.WSGIApplication([
-    ('/', MainHandler)
+    (r'/trip/(.*)/?', MainHandler)
 ], debug=True)
