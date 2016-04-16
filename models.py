@@ -4,10 +4,11 @@
 # ENCRYPTION IMPORTS
 # import bcrypt
 from google.appengine.ext import ndb
+from rest_gae.users import User
 
 
-class User(ndb.Model):
-    email = ndb.UserProperty()
+class MyUser(User):
+    pass
 
 
 class Trip(ndb.Model):
