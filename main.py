@@ -44,23 +44,27 @@ class MainHandler(webapp2.RequestHandler):
         self.response.out.write("Trip:" + trip + "; trip_key = " + trip_key + "; trip_url = " + trip_url)
         # Redirect to trip?
 
-config = {
-    'webapp2_extras.sessions': {
-        'secret_key': 'my-super-secret-key',
+
+def setupWSGI():
+    config = {
+        'webapp2_extras.sessions': {
+            'secret_key': 'my-super-secret-key',
+        }
     }
-}
 
-app = webapp2.WSGIApplication([
-    RESTHandler(
-        '/api/v1/trip',
-        Trip,
-        permissions={
-            'GET': PERMISSION_ANYONE,
-            'POST': PERMISSION_LOGGED_IN_USER,
-            'PUT': PERMISSION_OWNER_USER,
-            'DELETE': PERMISSION_OWNER_USER
-        },
+    return webapp2.WSGIApplication([
+        RESTHandler(
+            '/api/v1/trip',
+            Trip,
+            permissions={
+                'GET': PERMISSION_ANYONE,
+                'POST': PERMISSION_LOGGED_IN_USER,
+                'PUT': PERMISSION_OWNER_USER,
+                'DELETE': PERMISSION_OWNER_USER
+            },
 
-    ),
-    # (r'/(.*)?', MainHandler),
-], config=config, debug=True)
+        ),
+        # (r'/(.*)?', MainHandler),
+    ], config=config, debug=True)
+
+app = setupWSGI()

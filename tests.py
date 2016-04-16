@@ -1,4 +1,12 @@
-import server
+import os
+import sys
+
+sys.path.insert(0, '/usr/local/gae/python')
+import dev_appserver
+dev_appserver.fix_sys_path()
+
+import webtest
+import webapp2
 import unittest
 import json
 
@@ -6,12 +14,11 @@ from google.appengine.api import memcache
 from google.appengine.ext import ndb
 from google.appengine.ext import testbed
 from models import Trip
+from main import setupWSGI
 
 
-class BaseApiTestCase(unittest.TestCase):
+class BaseTestbedTest(unittest.TestCase):
     def setUp(self):
-        # First, create an instance of the Testbed class.
-        self.testbed = testbed.Testbed()
         # Then activate the testbed, which prepares the service stubs for use.
         self.testbed.activate()
         # Next, declare which service stubs you want to use.
@@ -27,15 +34,25 @@ class BaseApiTestCase(unittest.TestCase):
         self.testbed.deactivate()
 
 
-class ModelTestCase(BaseApiTestCase):
+class BaseWebtestTest(unittest.TestCase):
+    def setUp(self):
+        app = setupWSGI()
+        self.testapp = webtest.TestApp(app)
+        # First, create an instance of the Testbed class.
+        self.testbed = testbed.Testbed()
+
+
+class ModelTests(BaseTestbedTest):
+    pass
+
+
+class RestTripTest(BaseWebtestTest):
     def test_posting_myobject(self):
-        response = self.app.post('/trip/', data=json.dumps(Trip(name="My Trip")), content_type='application/json')
+        response = self.testapp.post_json('/trip/', dict(name="My trip"))
 
-        responseJSON = json.loads(response.data.decode())
-
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, 201)
         assert 'application/json' in response.content_type
-        assert 'My Trip' in responseJSON["name"]
+        assert 'My Trip' in response.json["name"]
 
     def test_getting_object(self):
         response = self.app.post('/trip/', data=json.dumps(dict(name="Another Trip")), content_type='application/json')
