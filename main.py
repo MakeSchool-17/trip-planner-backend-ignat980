@@ -58,7 +58,7 @@ def setupWSGI():
             Trip,
             permissions={
                 'GET': PERMISSION_ANYONE,
-                'POST': PERMISSION_LOGGED_IN_USER,
+                'POST': PERMISSION_ANYONE,
                 'PUT': PERMISSION_OWNER_USER,
                 'DELETE': PERMISSION_OWNER_USER
             },

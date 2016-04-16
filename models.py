@@ -6,6 +6,23 @@
 from google.appengine.ext import ndb
 
 
+class Trip(ndb.Model):
+    name = ndb.StringProperty()
+    owner = ndb.KeyProperty()
+
+    def get_by_url(self, trip_id):
+        trip_key = ndb.Key(urlsafe=trip_id)
+        return trip_key.get()
+
+    class RESTMeta:
+        user_owner_property = 'owner'
+
+
+class Waypoint(ndb.Model):
+    name = ndb.StringProperty()
+    location = ndb.GeoPtProperty(required=True)
+    trip = ndb.KeyProperty(kind=Trip)
+
 # class User(DBModel):
 #     """
 #     ' Extension of DBModel to implement user data-storage.
@@ -71,21 +88,3 @@ from google.appengine.ext import ndb
 #             if len(query) > 0:
 #                 return False
 #         return super(User, self).save()
-
-
-class Trip(ndb.Model):
-    name = ndb.StringProperty()
-    owner = ndb.KeyProperty()
-
-    def get_by_url(self, trip_id):
-        trip_key = ndb.Key(urlsafe=trip_id)
-        return trip_key.get()
-
-    class RESTMeta:
-        user_owner_property = 'owner'
-
-
-class Waypoint(ndb.Model):
-    name = ndb.StringProperty()
-    location = ndb.GeoPtProperty(required=True)
-    trip = ndb.KeyProperty(kind=Trip)
