@@ -59,8 +59,8 @@ def setupWSGI():
             permissions={
                 'GET': PERMISSION_ANYONE,
                 'POST': PERMISSION_ANYONE,
-                'PUT': PERMISSION_OWNER_USER,
-                'DELETE': PERMISSION_OWNER_USER
+                'PUT': PERMISSION_ANYONE,
+                'DELETE': PERMISSION_ANYONE
             },
 
         ),

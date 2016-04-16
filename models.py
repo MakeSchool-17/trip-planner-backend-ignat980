@@ -6,9 +6,13 @@
 from google.appengine.ext import ndb
 
 
+class User(ndb.Model):
+    email = ndb.UserProperty()
+
+
 class Trip(ndb.Model):
     name = ndb.StringProperty()
-    owner = ndb.KeyProperty()
+    owner = ndb.KeyProperty(kind=User)
 
     def get_by_url(self, trip_id):
         trip_key = ndb.Key(urlsafe=trip_id)
