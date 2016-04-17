@@ -20,7 +20,8 @@ import sys
 REST_GAE_PROJECT_DIR = os.path.join(os.path.dirname(__file__), 'vendor/rest_gae')
 sys.path.append(REST_GAE_PROJECT_DIR)
 
-from models import Trip, Waypoint
+from models import Trip
+from handlers import *
 from rest_gae import *
 from rest_gae.users import UserRESTHandler
 
@@ -67,9 +68,9 @@ def setupWSGI():
                 'PUT': PERMISSION_OWNER_USER,
                 'DELETE': PERMISSION_OWNER_USER
             },
-
+            after_post_callback=after_post,
+            after_put_callback=after_put
         ),
-
         UserRESTHandler(
             '/api/v1/users',  # The base URL for the user management endpoints
             # user_model='models.User',  # Use our own custom User class
@@ -95,7 +96,8 @@ def setupWSGI():
             send_email_callback=None,  # my_senc_func(email)
             allow_login_for_non_verified_email=True,
             user_policy_callback=None
-        )
+        ),
+        ('/api/v1/trips/', TripHandler)
         # (r'/(.*)?', MainHandler),
     ], config=config, debug=True)
 

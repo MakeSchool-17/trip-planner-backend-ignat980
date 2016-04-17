@@ -56,3 +56,6 @@ target/
 
 # pyenv
 .python-version
+
+#Submodule modifications
+vendor/rest_gae-master
