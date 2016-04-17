@@ -13,7 +13,7 @@ import json
 from google.appengine.api import memcache
 from google.appengine.ext import ndb
 from google.appengine.ext import testbed
-from models import *
+from models import MyUser, Trip, Waypoint
 from main import setupWSGI
 from seeds import Seeder
 

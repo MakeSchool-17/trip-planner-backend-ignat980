@@ -63,9 +63,9 @@ def setupWSGI():
             Trip,
             permissions={
                 'GET': PERMISSION_ANYONE,
-                'POST': PERMISSION_ANYONE,
-                'PUT': PERMISSION_ANYONE,
-                'DELETE': PERMISSION_ANYONE
+                'POST': PERMISSION_LOGGED_IN_USER,
+                'PUT': PERMISSION_OWNER_USER,
+                'DELETE': PERMISSION_OWNER_USER
             },
 
         ),
@@ -74,17 +74,17 @@ def setupWSGI():
             '/api/v1/users',  # The base URL for the user management endpoints
             # user_model='models.User',  # Use our own custom User class
             email_as_username=True,
-            admin_only_user_registration=True,
+            admin_only_user_registration=False,
             user_details_permission=PERMISSION_LOGGED_IN_USER,
-            verify_email_address=True,
-            verification_email={
-                'sender': 'Ignat Remizov <ignat980@gmail.com>',
-                'subject': 'Verify your email',
-                'body_text': 'Hello {{ user.full_name }}, click here: {{ verification_url }}',
-                'body_html': 'Hello {{ user.full_name }}, click <a href="{{ verification_url }}">here</a>'
-            },
-            verification_successful_url='/verified-user',
-            verification_failed_url='/verification-failed',
+            verify_email_address=False,
+            # verification_email={
+            #     'sender': 'Ignat Remizov <ignat980@gmail.com>',
+            #     'subject': 'Verify your email',
+            #     'body_text': 'Hello {{ user.full_name }}, click here: {{ verification_url }}',
+            #     'body_html': 'Hello {{ user.full_name }}, click <a href="{{ verification_url }}">here</a>'
+            # },
+            # verification_successful_url='/verified-user',
+            # verification_failed_url='/verification-failed',
             reset_password_url='/reset-password',
             reset_password_email={
                 'sender': 'Ignat Remizov <ignat980@gmail.com>',
@@ -93,8 +93,8 @@ def setupWSGI():
                 'body_html': 'Hello {{ user.name }}, click <a href="{{ verification_url }}">here</a>'
             },
             send_email_callback=None,  # my_senc_func(email)
-            allow_login_for_non_verified_email=False,
-            user_policy_callback=userPolicy
+            allow_login_for_non_verified_email=True,
+            user_policy_callback=None
         )
         # (r'/(.*)?', MainHandler),
     ], config=config, debug=True)

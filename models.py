@@ -7,9 +7,6 @@ from google.appengine.ext import ndb
 from rest_gae.users import User
 
 
-class MyUser(User):
-    pass
-
 
 class Trip(ndb.Model):
     name = ndb.StringProperty()
