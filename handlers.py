@@ -76,10 +76,15 @@ def after_put(created_keys, trip, json_data):
 def after_get(trips):
     print 'After get'
     print trips
-    for trip in trips:
-        query = Waypoint.query().filter(Waypoint.trip == trip.key)
+    if isinstance(trips, list):
+        for trip in trips:
+            query = Waypoint.query().filter(Waypoint.trip == trip.key)
+            waypoints = query.fetch(100)
+            trip.waypoints = [waypoint.to_dict() for waypoint in waypoints]
+    else:
+        query = Waypoint.query().filter(Waypoint.trip == trips.key)
         waypoints = query.fetch(100)
-        trip['waypoints'] = waypoints
+        trips.waypoints = [waypoint.to_dict() for waypoint in waypoints]
     return trips
 
 

@@ -11,6 +11,7 @@ class Trip(ndb.Model):
     name = ndb.StringProperty()
     owner = ndb.KeyProperty(kind=User)
     date = ndb.DateTimeProperty(auto_now_add=True)
+    waypoints = ndb.JsonProperty()
 
     def get_by_url(self, trip_id):
         trip_key = ndb.Key(urlsafe=trip_id)
