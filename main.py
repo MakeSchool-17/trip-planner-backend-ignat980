@@ -68,8 +68,10 @@ def setupWSGI():
                 'PUT': PERMISSION_OWNER_USER,
                 'DELETE': PERMISSION_OWNER_USER
             },
+            after_get_callback=after_get,
             after_post_callback=after_post,
-            after_put_callback=after_put
+            after_put_callback=after_put,
+            after_delete_callback=after_delete
         ),
         UserRESTHandler(
             '/api/v1/users',  # The base URL for the user management endpoints

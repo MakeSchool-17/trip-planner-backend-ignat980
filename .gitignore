@@ -58,4 +58,4 @@ target/
 .python-version
 
 #Submodule modifications
-vendor/rest_gae-master
+#vendor/rest_gae-master
