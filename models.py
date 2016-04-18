@@ -2,9 +2,29 @@
 # Hunter guided me through the process of making these models, and that the server
 # does not directly talk to the mongo db, but it sends commands to the models that then talk to the db
 # ENCRYPTION IMPORTS
-import bcrypt
+# import bcrypt
 from google.appengine.ext import ndb
+from rest_gae.users import User
 
+
+class Trip(ndb.Model):
+    name = ndb.StringProperty()
+    owner = ndb.KeyProperty(kind=User)
+    date = ndb.DateTimeProperty(auto_now_add=True)
+    waypoints = ndb.JsonProperty()
+
+    def get_by_url(self, trip_id):
+        trip_key = ndb.Key(urlsafe=trip_id)
+        return trip_key.get()
+
+    class RESTMeta:
+        user_owner_property = 'owner'
+
+
+class Waypoint(ndb.Model):
+    name = ndb.StringProperty()
+    location = ndb.GeoPtProperty(required=True)
+    trip = ndb.KeyProperty(kind=Trip)
 
 # class User(DBModel):
 #     """
@@ -71,17 +91,3 @@ from google.appengine.ext import ndb
 #             if len(query) > 0:
 #                 return False
 #         return super(User, self).save()
-
-
-class Trip(ndb.Model):
-    name = ndb.StringProperty()
-
-    def get_by_url(self, trip_id):
-        trip_key = ndb.Key(urlsafe=trip_id)
-        return trip_key.get()
-
-
-class Waypoint(ndb.Model):
-    name = ndb.StringProperty()
-    location = ndb.GeoPtProperty(required=True)
-    trip = ndb.KeyProperty(kind=Trip)
